@@ -1,0 +1,11 @@
+[package]
+name = "unshield"
+version = "0.1.0"
+authors = ["Aaron Griffith <aargri@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+byteorder = "1.3"
+
+[dependencies.explode]
+git = "https://github.com/agrif/explode"
