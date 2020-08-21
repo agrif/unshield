@@ -36,10 +36,10 @@ fn extract(archive: &str, destination: &str, raw: bool) -> Result<()> {
         let mut f = File::create(dest)?;
 
         if raw {
-            let data = ar.read_compressed(&file.path)?;
+            let data = ar.load_compressed(&file.path)?;
             f.write_all(&data)?;
         } else {
-            let data = ar.read(&file.path)?;
+            let data = ar.load(&file.path)?;
             f.write_all(&data)?;
         }
     }

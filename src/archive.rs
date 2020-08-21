@@ -43,7 +43,7 @@ where
             .ok_or_else(|| Error::new(ErrorKind::NotFound, "file not found"))
     }
 
-    pub fn read_compressed(&mut self, path: &str) -> Result<Vec<u8>> {
+    pub fn load_compressed(&mut self, path: &str) -> Result<Vec<u8>> {
         let info = self.find(path)?;
         let size = info.size;
         let offset = info.offset;
@@ -53,8 +53,51 @@ where
         Ok(ret)
     }
 
-    pub fn read(&mut self, path: &str) -> Result<Vec<u8>> {
-        explode::explode(&self.read_compressed(path)?)
+    pub fn load(&mut self, path: &str) -> Result<Vec<u8>> {
+        explode::explode(&self.load_compressed(path)?)
             .map_err(|e| Error::new(ErrorKind::InvalidData, e))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Archive;
+    use crate::examples::EXAMPLES;
+    use std::io::Cursor;
+
+    #[test]
+    fn archive_new() {
+        for (arcdata, _files) in EXAMPLES {
+            let c = Cursor::new(arcdata);
+            let _ar = Archive::new(c).unwrap();
+        }
+    }
+
+    #[test]
+    fn archive_list() {
+        for (arcdata, files) in EXAMPLES {
+            let c = Cursor::new(arcdata);
+            let ar = Archive::new(c).unwrap();
+            // are all files we can list expected?
+            for file in ar.list() {
+                let i = files.iter().find(|(name, _)| *name == file.path);
+                if i.is_none() {
+                    panic!("unexpected file {:?}", file.path);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn archive_load() {
+        for (arcdata, files) in EXAMPLES {
+            let c = Cursor::new(arcdata);
+            let mut ar = Archive::new(c).unwrap();
+            // do all expected files have the right contents?
+            for (fname, contents) in files.iter() {
+                let ours = ar.load(fname).unwrap();
+                assert_eq!(ours, *contents);
+            }
+        }
     }
 }

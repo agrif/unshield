@@ -1,4 +1,5 @@
 mod archive;
+mod examples;
 mod format;
 
 pub use archive::Archive;
