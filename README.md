@@ -1,6 +1,6 @@
 # unshield
 
-[![build status](https://travis-ci.org/agrif/unshield.svg?branch=master)](https://travis-ci.org/agrif/unshield)
+[![build status](https://api.travis-ci.com/agrif/unshield.svg?branch=master)](https://travis-ci.com/github/agrif/unshield)
 [![crates.io](https://img.shields.io/crates/v/unshield.svg)](https://crates.io/crates/unshield)
 [![docs.rs](https://docs.rs/unshield/badge.svg)](https://docs.rs/unshield)
 
