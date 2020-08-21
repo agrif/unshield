@@ -1,11 +1,18 @@
 [package]
 name = "unshield"
 version = "0.1.0"
-authors = ["Aaron Griffith <aargri@gmail.com>"]
 edition = "2018"
+
+description = "Extract files from InstallShield Z archives."
+authors = ["Aaron Griffith <aargri@gmail.com>"]
+repository = "https://github.com/agrif/unshield"
+documentation = "https://docs.rs/unshield"
+readme = "README.md"
+license = "MIT"
+
+keywords = ["installshield", "archive"]
+categories = ["compression", "encoding", "command-line-utilities", "filesystem"]
 
 [dependencies]
 byteorder = "1.3"
-
-[dependencies.explode]
-git = "https://github.com/agrif/explode"
+explode = "0.1"
