@@ -35,11 +35,19 @@ struct Header {
     dirs: u16,
 }
 
+/// Information about a file in an InstallShield Z archive.
+///
+/// You can get an iterator over these entries by using
+/// [`Archive::list`](struct.Archive.html#method.list).
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct FileInfo {
+    /// The name of the file (without directories).
     pub name: String,
+    /// The full path of the file, using `\` to seperate directories.
     pub path: String,
+    /// The compressed size of the file in the archive.
     pub size: usize,
+    /// The offset within the archive where the file starts.
     pub offset: u64,
 }
 

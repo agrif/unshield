@@ -3,6 +3,13 @@ use crate::format::{FileInfo, Format, FormatStep};
 use std::collections::HashMap;
 use std::io::{Error, ErrorKind, Read, Result, Seek, SeekFrom};
 
+/// An interface for reading an InstallShield Z archive.
+///
+/// You can use this to read a Z archive out of any type that
+/// implements [`Read`][Read] and [`Seek`][Seek].
+///
+///  [Read]: https://doc.rust-lang.org/std/io/trait.Read.html
+///  [Seek]: https://doc.rust-lang.org/std/io/trait.Seek.html
 #[derive(Debug)]
 pub struct Archive<R> {
     inner: R,
@@ -13,6 +20,10 @@ impl<R> Archive<R>
 where
     R: Read + Seek,
 {
+    /// Create a new Z archive from an underlying reader.
+    ///
+    /// This function will parse the file header and table of
+    /// contents. If either of these fail, it will return an `Err`.
     pub fn new(mut inner: R) -> Result<Self> {
         let mut fmt = Format::new();
         loop {
@@ -33,6 +44,7 @@ where
         }
     }
 
+    /// List the files contained in the archive.
     pub fn list(&self) -> impl Iterator<Item = &FileInfo> {
         self.files.values()
     }
@@ -43,6 +55,13 @@ where
             .ok_or_else(|| Error::new(ErrorKind::NotFound, "file not found"))
     }
 
+    /// Load a file into a `Vec`.
+    pub fn load(&mut self, path: &str) -> Result<Vec<u8>> {
+        explode::explode(&self.load_compressed(path)?)
+            .map_err(|e| Error::new(ErrorKind::InvalidData, e))
+    }
+
+    /// Load a file into a `Vec` without decompressing it.
     pub fn load_compressed(&mut self, path: &str) -> Result<Vec<u8>> {
         let info = self.find(path)?;
         let size = info.size;
@@ -51,11 +70,6 @@ where
         self.inner.seek(SeekFrom::Start(offset))?;
         self.inner.read_exact(&mut ret)?;
         Ok(ret)
-    }
-
-    pub fn load(&mut self, path: &str) -> Result<Vec<u8>> {
-        explode::explode(&self.load_compressed(path)?)
-            .map_err(|e| Error::new(ErrorKind::InvalidData, e))
     }
 }
 
