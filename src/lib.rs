@@ -6,6 +6,15 @@
 //!
 //!  [z]: http://fileformats.archiveteam.org/wiki/InstallShield_Z
 //!
+//! # Command Line
+//!
+//! This crate comes with a simple command line tool for extracting
+//! and inspecting Z archives.
+//!
+//! ```bash
+//! unshield list src/examples/demo.z
+//! unshield extract src/examples/demo.z demo-out
+//! ```
 //! # Examples
 //!
 //! Anything that implements [`Read`][Read] and [`Seek`][Seek] can be
