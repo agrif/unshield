@@ -6,6 +6,28 @@
 
 Extract files from InstallShield Z archives.
 
+This crate can open and extract files from [InstallShield Z
+archives][z]. This archive format is used by version 3 of
+InstallShield.
+
+ [z]: http://fileformats.archiveteam.org/wiki/InstallShield_Z
+
+## Examples
+
+Anything that implements `Read` and `Seek` can be read as an
+archive. Most commonly, this will be a `File`.
+
+```rust
+let mut some_file = std::fs::File::open("src/examples/demo.z")?;
+let mut ar = unshield::Archive::new(some_file)?;
+
+let data = ar.load("subdir\\test.txt")?;
+
+for fileinfo in ar.list() {
+    println!("{}", fileinfo.path);
+}
+```
+
 ## License
 
 Licensed under the [MIT license](LICENSE). Unless stated otherwise,
