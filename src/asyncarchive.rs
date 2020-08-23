@@ -81,12 +81,13 @@ where
 mod tests {
     use super::AsyncArchive;
     use crate::examples::EXAMPLES;
-    use smol::io::Cursor;
+    use futures_lite::io::Cursor;
 
     #[test]
     fn archive_new() {
+        let ex = async_executor::LocalExecutor::new();
         for (arcdata, _files) in EXAMPLES {
-            smol::block_on(async {
+            ex.run(async {
                 let c = Cursor::new(arcdata);
                 let _ar = AsyncArchive::new(c).await.unwrap();
             });
@@ -95,8 +96,9 @@ mod tests {
 
     #[test]
     fn archive_list() {
+        let ex = async_executor::LocalExecutor::new();
         for (arcdata, files) in EXAMPLES {
-            smol::block_on(async {
+            ex.run(async {
                 let c = Cursor::new(arcdata);
                 let ar = AsyncArchive::new(c).await.unwrap();
                 // are all files we can list expected?
@@ -112,9 +114,10 @@ mod tests {
 
     #[test]
     fn archive_load() {
+        let ex = async_executor::LocalExecutor::new();
         for (arcdata, files) in EXAMPLES {
             let c = Cursor::new(arcdata);
-            smol::block_on(async {
+            ex.run(async {
                 let mut ar = AsyncArchive::new(c).await.unwrap();
                 // do all expected files have the right contents?
                 for (fname, contents) in files.iter() {
