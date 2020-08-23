@@ -38,9 +38,17 @@
 //! # Ok(()) }
 //! ```
 
+// we want feature tags in documentation on docsrs
+#![cfg_attr(docsrs, feature(doc_cfg))]
+
 mod archive;
 mod examples;
 mod format;
 
 pub use archive::Archive;
 pub use format::FileInfo;
+
+#[cfg(feature = "async")]
+mod asyncarchive;
+#[cfg(feature = "async")]
+pub use asyncarchive::AsyncArchive;
